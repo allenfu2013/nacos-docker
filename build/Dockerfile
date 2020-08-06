@@ -26,7 +26,9 @@ WORKDIR /$BASE_DIR
 
 RUN set -x \
     && yum update -y \
-    && yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel wget iputils nc  vim libcurl
+    && yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel wget iputils nc  vim libcurl \
+    && rpm -ivh https://repo.mysql.com//mysql57-community-release-el7-11.noarch.rpm \
+    && yum install -y mysql-community-client.x86_64
 RUN wget  https://github.com/alibaba/nacos/releases/download/${NACOS_VERSION}/nacos-server-${NACOS_VERSION}.tar.gz -P /home
 RUN tar -xzvf /home/nacos-server-${NACOS_VERSION}.tar.gz -C /home \
     && rm -rf /home/nacos-server-${NACOS_VERSION}.tar.gz /home/nacos/bin/* /home/nacos/conf/*.properties /home/nacos/conf/*.example /home/nacos/conf/nacos-mysql.sql
@@ -39,6 +41,7 @@ RUN yum autoremove -y wget \
 
 ADD bin/docker-startup.sh bin/docker-startup.sh
 ADD conf/application.properties conf/application.properties
+ADD conf/nacos-mysql.sql conf/nacos-mysql.sql
 ADD init.d/custom.properties init.d/custom.properties
 
 
@@ -48,7 +51,16 @@ RUN mkdir -p logs \
 	&& touch start.out \
 	&& ln -sf /dev/stdout start.out \
 	&& ln -sf /dev/stderr start.out
+
 RUN chmod +x bin/docker-startup.sh
+
+RUN sed -i '1 i\SET tx_isolation="serializable";' conf/nacos-mysql.sql \
+    && sed -i '1 i\begin;CREATE DATABASE IF NOT EXISTS nacos;USE nacos;'  conf/nacos-mysql.sql \
+    && sed -i '$a\rollback;' conf/nacos-mysql.sql \
+    && sed -i '$a\commit;' conf/nacos-mysql.sql
+
+RUN sed -i '2 i\nohup mysql -u${MYSQL_SERVICE_USER} -h ${MYSQL_SERVICE_HOST} \
+-p${MYSQL_SERVICE_PASSWORD} <${BASE_DIR}/conf/nacos-mysql.sql > /home/nacos/logs/mysql.log 2>&1 &' ${BASE_DIR}/bin/docker-startup.sh
 
 EXPOSE 8848
 ENTRYPOINT ["bin/docker-startup.sh"]
