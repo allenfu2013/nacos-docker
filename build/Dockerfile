@@ -52,6 +52,10 @@ RUN mkdir -p logs \
 
 RUN chmod +x bin/docker-startup.sh
 
+RUN addr_array=(`echo $NACOS_SERVERS | tr ':8848' ' '` ) \
+    && cloud_addr=${addr_array[0]}${addr_array[1]} \
+    && sed -i "1 i\nacos.kc.addresses=${cloud_addr}" conf/application.properties
+
 RUN sed -i '1 i\SET tx_isolation="serializable";' conf/nacos-mysql.sql \
     && sed -i '1 i\begin;CREATE DATABASE IF NOT EXISTS nacos;USE nacos;'  conf/nacos-mysql.sql \
     && sed -i '$a\rollback;' conf/nacos-mysql.sql \
