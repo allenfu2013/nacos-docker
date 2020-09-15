@@ -16,6 +16,10 @@ export DEFAULT_SEARCH_LOCATIONS="classpath:/,classpath:/config/,file:./,file:./c
 export CUSTOM_SEARCH_LOCATIONS=${DEFAULT_SEARCH_LOCATIONS},file:${BASE_DIR}/conf/,${BASE_DIR}/init.d/
 export CUSTOM_SEARCH_NAMES="application,custom"
 export MEMBER_LIST=""
+
+NACOS_IPS=${NACOS_SERVERS//:8848/}
+sed -i "1 i\nacos.kc.addresses=${NACOS_IPS%,*}" ${BASE_DIR}/conf/application.properties
+
 PLUGINS_DIR="/home/nacos/plugins/peer-finder"
 function print_servers(){
    if [[ ! -d "${PLUGINS_DIR}" ]]; then
