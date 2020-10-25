@@ -29,7 +29,7 @@ RUN set -x \
     && yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel wget iputils nc  vim libcurl \
     && rpm -ivh https://repo.mysql.com//mysql57-community-release-el7-11.noarch.rpm \
     && yum install -y mysql-community-client.x86_64
-RUN wget https://fengjinghuadev.s3.cn-northwest-1.amazonaws.com.cn/kycloud/3.x/nacos/nacos_prd_0908/nacos-server-${NACOS_VERSION}.tar.gz -P /home
+RUN wget https://fengjinghuadev.s3.cn-northwest-1.amazonaws.com.cn/kycloud/3.x/nacos/nacos-server-${NACOS_VERSION}.tar.gz -P /home
 RUN tar -xzvf /home/nacos-server-${NACOS_VERSION}.tar.gz -C /home \
     && rm -rf /home/nacos-server-${NACOS_VERSION}.tar.gz /home/nacos/bin/* /home/nacos/conf/*.properties /home/nacos/conf/*.example
 RUN yum autoremove -y wget \

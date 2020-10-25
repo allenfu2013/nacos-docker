@@ -45,15 +45,18 @@ CREATE TABLE `config_info_item` (
   `data_id` varchar(255) NOT NULL COMMENT 'data_id',
   `group_id` varchar(255) DEFAULT NULL,
   `item_key` varchar(128) NOT NULL,
-	`item_value` longtext NOT NULL COMMENT 'content',
+  `item_value` longtext NOT NULL COMMENT 'content',
   `item_comment` varchar(128) DEFAULT NULL ,
   `item_meaning` varchar(128) DEFAULT NULL ,
   `restart_effect` boolean NOT NULL DEFAULT false,
-  `item_status` varchar(20) NOT NULL DEFAULT 'NEW',
+  `item_status` varchar(20) NOT NULL DEFAULT 'COMMITTED',
+  `commit_id` varchar (60) NOT NULL,
+  `system_scope` boolean NOT NULL DEFAULT false,
   `md5` varchar(32) DEFAULT NULL COMMENT 'md5',
   `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   `src_user` text COMMENT 'source user',
+  `modified_by` varchar(64) NOT NULL DEFAULT 'System Default',
   `src_ip` varchar(20) DEFAULT NULL COMMENT 'source ip',
   `app_name` varchar(128) DEFAULT NULL,
   `tenant_id` varchar(128) DEFAULT '' COMMENT '租户字段',
@@ -63,8 +66,9 @@ CREATE TABLE `config_info_item` (
   `type` varchar(64) DEFAULT NULL,
   `c_schema` text,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_configinfo_datagrouptenant` (`data_id`,`group_id`,`tenant_id`)
+  UNIQUE KEY `uk_configinfo_datagrouptenant` (`data_id`,`group_id`,`tenant_id`, `item_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='config_info_item';
+
 
 /******************************************/
 /*   数据库全名 = nacos_config   */
@@ -185,6 +189,27 @@ CREATE TABLE `his_config_info` (
   KEY `idx_gmt_modified` (`gmt_modified`),
   KEY `idx_did` (`data_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='多租户改造';
+
+CREATE TABLE `his_config_item_info` (
+  `id` bigint(64) unsigned NOT NULL,
+  `nid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `data_id` varchar(255) NOT NULL,
+  `group_id` varchar(128) NOT NULL,
+  `item_key` varchar(128) NOT NULL,
+  `item_value` varchar(128) NOT NULL,
+  `app_name` varchar(128) DEFAULT NULL COMMENT 'app_name',
+  `md5` varchar(32) DEFAULT NULL,
+  `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `src_user` text,
+  `src_ip` varchar(20) DEFAULT NULL,
+  `op_type` char(10) DEFAULT NULL,
+  `tenant_id` varchar(128) DEFAULT '' COMMENT '租户字段',
+  PRIMARY KEY (`nid`),
+  KEY `idx_gmt_create` (`gmt_create`),
+  KEY `idx_gmt_modified` (`gmt_modified`),
+  KEY `idx_did` (`data_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='history item';
 
 
 /******************************************/

@@ -128,4 +128,4 @@
 
 使用参考：[Nacos monitor-guide](https://nacos.io/zh-cn/docs/monitor-guide.html)
 
-**Note**:  当使用Grafana创建数据源的时候地址必须是: **http://prometheus:9090**
+**Note**:  当使用Grafana创建数据源的时候地址必须是: **http://prometheus:9090** 
