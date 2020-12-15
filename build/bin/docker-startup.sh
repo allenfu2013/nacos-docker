@@ -17,6 +17,21 @@ export CUSTOM_SEARCH_LOCATIONS=${DEFAULT_SEARCH_LOCATIONS},file:${BASE_DIR}/conf
 export CUSTOM_SEARCH_NAMES="application,custom"
 export MEMBER_LIST=""
 
+property=`cat ${BASE_DIR}/nacos_conf/nacos.properties | grep 'spring.datasource.password=' | grep -v '#'`
+MYSQL_SERVICE_PASSWORD=`echo "${property#*=}"`
+ORIGIN_PASSWORD=`sh bin/decrypt_db_password.sh`
+
+if [ "$MYSQL_SERVICE_PASSWORD" = "$ORIGIN_PASSWORD" ];then
+  sh bin/encrypt_db_password.sh
+fi
+
+property=`cat ${BASE_DIR}/nacos_conf/nacos.properties | grep 'spring.datasource.password=' | grep -v '#'`
+MYSQL_SERVICE_PASSWORD=`echo "${property#*=}"`
+export MYSQL_SERVICE_PASSWORD=$MYSQL_SERVICE_PASSWORD
+
+nohup mysql -u${MYSQL_SERVICE_USER} -h ${MYSQL_SERVICE_HOST} \
+ -p${ORIGIN_PASSWORD} <${BASE_DIR}/conf/nacos-mysql.sql > /home/nacos/logs/mysql.log 2>&1 &
+
 NACOS_IPS=${NACOS_SERVERS//:8848/}
 sed -i "1 i\nacos.kc.addresses=${NACOS_IPS%,*}" ${BASE_DIR}/conf/application.properties
 

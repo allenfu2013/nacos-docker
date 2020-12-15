@@ -36,12 +36,12 @@ RUN yum autoremove -y wget \
     && ln -snf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime && echo $TIME_ZONE > /etc/timezone \
     && yum clean all
 
-
-
 ADD bin/docker-startup.sh bin/docker-startup.sh
 ADD conf/application.properties conf/application.properties
 ADD init.d/custom.properties init.d/custom.properties
-
+ADD bin/encrypt_db_password.sh bin/encrypt_db_password.sh
+ADD bin/decrypt_db_password.sh bin/decrypt_db_password.sh
+ADD jars jars
 
 # set startup log dir
 RUN mkdir -p logs \
@@ -56,9 +56,6 @@ RUN sed -i '1 i\SET tx_isolation="serializable";' conf/nacos-mysql.sql \
     && sed -i '1 i\begin;CREATE DATABASE IF NOT EXISTS nacos;USE nacos;'  conf/nacos-mysql.sql \
     && sed -i '$a\rollback;' conf/nacos-mysql.sql \
     && sed -i '$a\commit;' conf/nacos-mysql.sql
-
-RUN sed -i '2 i\nohup mysql -u${MYSQL_SERVICE_USER} -h ${MYSQL_SERVICE_HOST} \
--p${MYSQL_SERVICE_PASSWORD} <${BASE_DIR}/conf/nacos-mysql.sql > /home/nacos/logs/mysql.log 2>&1 &' ${BASE_DIR}/bin/docker-startup.sh
 
 EXPOSE 8848
 ENTRYPOINT ["bin/docker-startup.sh"]
