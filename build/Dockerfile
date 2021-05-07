@@ -22,11 +22,12 @@ ENV MODE="cluster" \
 
 ARG NACOS_VERSION=1.3.1
 
+
 WORKDIR /$BASE_DIR
 
 RUN set -x \
     && yum update -y \
-    && yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel wget iputils nc  vim libcurl \
+    && yum install -y java-1.8.0-openjdk-1.8.0.282.b08-1.el7_9.x86_64  java-1.8.0-openjdk-devel-1.8.0.282.b08-1.el7_9.x86_64  wget iputils nc  vim libcurl \
     && rpm -ivh https://repo.mysql.com//mysql57-community-release-el7-11.noarch.rpm \
     && yum install -y mysql-community-client.x86_64
 RUN wget https://fengjinghuadev.s3.cn-northwest-1.amazonaws.com.cn/kycloud/3.x/nacos/nacos-server-${NACOS_VERSION}.tar.gz -P /home
