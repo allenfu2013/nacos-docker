@@ -16,7 +16,7 @@ check_dependency() {
 get_property_value() {
     properties_file=$1
     property_key=$2
-    property=$(cat ${properties_file} | grep ${property_key} | grep -v '#')
+    property=$(cat ${properties_file} | grep ${property_key} | grep -v '^#')
     echo "${property#*=}"
 }
 

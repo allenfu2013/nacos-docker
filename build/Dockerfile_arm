@@ -31,7 +31,7 @@ RUN set -x \
     && yum update -y \
     && yum install -y java-1.8.0-openjdk.aarch64  java-1.8.0-openjdk-devel.aarch64  wget iputils nc  vim \
     && yum install -y mysql.aarch64
-RUN wget https://fengjinghuadev.s3.cn-northwest-1.amazonaws.com.cn/kycloud/3.x/nacos/nacos-server-${NACOS_VERSION}.tar.gz -P /home
+RUN wget https://s3.cn-north-1.amazonaws.com.cn/public.kyligence.io/kycloud/nacos/nacos-server-${NACOS_VERSION}.tar.gz -P /home
 RUN tar -xzvf /home/nacos-server-${NACOS_VERSION}.tar.gz -C /home \
     && rm -rf /home/nacos-server-${NACOS_VERSION}.tar.gz /home/nacos/bin/* /home/nacos/conf/*.properties /home/nacos/conf/*.example
 RUN yum autoremove -y wget \
