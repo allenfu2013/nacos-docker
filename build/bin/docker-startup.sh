@@ -29,9 +29,6 @@ if [[ -z "${MYSQL_MI_CONNECT_STR}" ]]; then
   property=`cat ${BASE_DIR}/nacos_conf/nacos.properties | grep 'spring.datasource.password=' | grep -v '^#'`
   MYSQL_SERVICE_PASSWORD=`echo "${property#*=}"`
   export MYSQL_SERVICE_PASSWORD=$MYSQL_SERVICE_PASSWORD
-
-  nohup mysql -u${MYSQL_SERVICE_USER} -h ${MYSQL_SERVICE_HOST} \
-   -p${ORIGIN_PASSWORD} <${BASE_DIR}/conf/nacos-mysql.sql > /home/nacos/logs/mysql.log 2>&1 &
 fi
 
 NACOS_IPS=${NACOS_SERVERS//:8848/}
