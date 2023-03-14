@@ -29,6 +29,7 @@ RUN set -x \
     && yum update -y \
     && yum install -y java-1.8.0-openjdk-1.8.0.282.b08-1.el7_9.x86_64  java-1.8.0-openjdk-devel-1.8.0.282.b08-1.el7_9.x86_64  wget iputils nc  vim libcurl \
     && rpm -ivh https://repo.mysql.com//mysql57-community-release-el7-11.noarch.rpm \
+    && rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022 \
     && yum install -y mysql-community-client.x86_64
 RUN wget https://s3.cn-north-1.amazonaws.com.cn/public.kyligence.io/kycloud/nacos/nacos-server-${NACOS_VERSION}.tar.gz -P /home
 RUN tar -xzvf /home/nacos-server-${NACOS_VERSION}.tar.gz -C /home \
