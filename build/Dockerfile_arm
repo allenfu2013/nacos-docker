@@ -29,7 +29,8 @@ RUN set -x \
     && sed -i -e "s|mirrorlist=|#mirrorlist=|g" /etc/yum.repos.d/CentOS-* \
     && sed -i -e "s|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g" /etc/yum.repos.d/CentOS-* \
     && yum update -y \
-    && yum install -y java-1.8.0-openjdk.aarch64  java-1.8.0-openjdk-devel.aarch64  wget iputils nc  vim
+    && yum install -y java-1.8.0-openjdk.aarch64  java-1.8.0-openjdk-devel.aarch64  wget iputils nc  vim \
+    && yum install -y mysql.aarch64
 RUN wget https://s3.cn-north-1.amazonaws.com.cn/public.kyligence.io/kycloud/nacos/nacos-server-${NACOS_VERSION}.tar.gz -P /home
 RUN tar -xzvf /home/nacos-server-${NACOS_VERSION}.tar.gz -C /home \
     && rm -rf /home/nacos-server-${NACOS_VERSION}.tar.gz /home/nacos/bin/* /home/nacos/conf/*.properties /home/nacos/conf/*.example
